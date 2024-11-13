@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
-import { useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
-import { parseEther } from 'viem'
+import {
+  UseBalanceReturnType,
+  useSendTransaction,
+  useWaitForTransactionReceipt,
+} from 'wagmi'
+import { formatEther, parseEther } from 'viem'
 import {
   Dialog,
   DialogContent,
@@ -14,8 +18,20 @@ import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import Link from 'next/link'
 import { ExternalLinkIcon } from 'lucide-react'
+import { toast } from 'sonner'
 
-export default function SendNativeTokenModal() {
+type SendErc20ModalProps = {
+  accountBalance: UseBalanceReturnType<{
+    decimals: number
+    formatted: string
+    symbol: string
+    value: bigint
+  }>
+}
+
+export default function SendNativeTokenModal({
+  accountBalance,
+}: SendErc20ModalProps) {
   const [toAddress, setToAddress] = useState('')
   const [ethValue, setEthValue] = useState('')
   const [isMounted, setIsMounted] = useState(false)
@@ -25,8 +41,15 @@ export default function SendNativeTokenModal() {
       hash,
     })
 
+  console.log(accountBalance)
+
   async function submitSendTx(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (
+      parseFloat(formatEther(accountBalance.data?.value ?? BigInt(0))) === 0
+    ) {
+      return toast.warning("you don't have enough POL balance")
+    }
     sendTransaction({
       to: toAddress as `0x${string}`,
       value: parseEther(ethValue),
@@ -46,7 +69,7 @@ export default function SendNativeTokenModal() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-center">Send ETH</DialogTitle>
+          <DialogTitle className="text-center">Send POL</DialogTitle>
           <DialogDescription>
             The amount entered will be sent to the address once you hit the Send
             button
@@ -54,6 +77,14 @@ export default function SendNativeTokenModal() {
         </DialogHeader>
         {isMounted ? (
           <div className="w-full">
+            <div className="flex flex-col text-center">
+              <h2>
+                {parseFloat(
+                  formatEther(accountBalance.data?.value ?? BigInt(0)),
+                ).toFixed(2)}
+              </h2>
+              <h4>POL</h4>
+            </div>
             <form
               className="flex w-full flex-col gap-y-2"
               onSubmit={submitSendTx}

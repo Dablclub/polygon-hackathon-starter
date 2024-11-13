@@ -48,14 +48,6 @@ export function ConnectedAccount() {
     )
   }
 
-  // if (status === 'connecting') {
-  //   return (
-  //     <div>
-  //       <p className="text-center text-lg">connecting...</p>
-  //     </div>
-  //   )
-  // }
-
   return (
     <div className="flex flex-col items-center gap-y-4 text-center">
       {ensAvatar && ensName && isMounted && (
@@ -77,9 +69,9 @@ export function ConnectedAccount() {
         </div>
       )}
       <div className="flex flex-col gap-y-2">
-        {accountBalance.data?.value && isMounted && (
+        {accountBalance.data?.value !== undefined && isMounted && (
           <p className="text-xl">
-            Balance: {accountBalance.data?.formatted} ETH
+            Balance: {accountBalance.data?.formatted} POL
           </p>
         )}
         {chain && chainId && isMounted && (
@@ -92,9 +84,9 @@ export function ConnectedAccount() {
       <div className="flex w-full justify-center gap-x-4 px-4">
         <div className="w-1/3">
           {chainId === 80002 ? (
-            <SendNativeTokenModal />
+            <SendNativeTokenModal accountBalance={accountBalance} />
           ) : (
-            <SwitchNetworkModal buttonText="Send ETH" requiredChainId={80002} />
+            <SwitchNetworkModal buttonText="Send POL" requiredChainId={80002} />
           )}
         </div>
         <div className="w-1/3">

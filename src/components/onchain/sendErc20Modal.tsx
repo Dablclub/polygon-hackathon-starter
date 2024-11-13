@@ -116,7 +116,7 @@ export default function SendErc20Modal({ userAddress }: SendErc20ModalProps) {
                   <h2>
                     {parseFloat(formatEther(erc20Balance as bigint)).toFixed(2)}
                   </h2>
-                  <h4>MOODENG</h4>
+                  <h4>ERC20</h4>
                 </>
               ) : (
                 <p>Loading...</p>
