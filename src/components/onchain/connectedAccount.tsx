@@ -7,10 +7,12 @@ import Image from 'next/image'
 import SendNativeTokenModal from './sendNativeTokenModal'
 import SendErc20Modal from './sendErc20Modal'
 import SwitchNetworkModal from './switchChainModal'
+import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
 
 export function ConnectedAccount() {
   const [isMounted, setIsMounted] = useState(false)
 
+  const { user } = useDynamicContext()
   const { address, chain, chainId, status } = useAccount()
 
   const accountBalance = useBalance({
@@ -50,6 +52,9 @@ export function ConnectedAccount() {
 
   return (
     <div className="flex flex-col items-center gap-y-4 text-center">
+      <div className="flex flex-col items-center gap-y-2">
+        <p className="text-lg">welcome {user?.username}</p>
+      </div>
       {ensAvatar && ensName && isMounted && (
         <div className="flex items-center gap-x-2">
           <Image

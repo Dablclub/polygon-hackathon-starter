@@ -10,7 +10,7 @@ import {
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum'
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { createConfig, WagmiProvider } from 'wagmi'
-import { http } from 'viem'
+import { Address, http } from 'viem'
 import {
   polygon,
   polygonAmoy,
@@ -19,6 +19,7 @@ import {
 } from 'viem/chains'
 import { useRouter } from 'next/navigation'
 import { customEvmNetworks } from './customNetworks'
+import { fetchUserAccount } from '@/services/user'
 
 const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ?? undefined
 
@@ -47,9 +48,28 @@ export default function OnchainProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   const events: DynamicEventsCallbacks = {
-    onAuthSuccess: (args) => {
-      console.log('onAuthSuccess was called', args)
-      router.push('/account')
+    onAuthSuccess: async ({ primaryWallet, user }) => {
+      console.log('onAuthSuccess was called', primaryWallet, user)
+      console.log('wallet', primaryWallet)
+      console.log('user', user)
+      if (!primaryWallet || !user || !user.userId || !user.username) {
+        console.error(
+          'Missing args from onAuthSuccess event, please check Dynamic/onchainProvider',
+        )
+        return
+      }
+      try {
+        const fetchedUser = await fetchUserAccount(
+          user.userId,
+          primaryWallet.address as Address,
+          user.username,
+        )
+        console.log('Succesfully fetched user:', fetchedUser)
+        router.push('/account')
+      } catch (error) {
+        console.error(error)
+        console.error('Unable to read/create user, please check the server')
+      }
     },
     onLogout: (args) => {
       console.log('onLogout was called', args)
