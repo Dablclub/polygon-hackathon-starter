@@ -49,7 +49,7 @@ export default function OnchainProvider({ children }: { children: ReactNode }) {
   const events: DynamicEventsCallbacks = {
     onAuthSuccess: (args) => {
       console.log('onAuthSuccess was called', args)
-      router.push('/dashboard')
+      router.push('/account')
     },
     onLogout: (args) => {
       console.log('onLogout was called', args)
