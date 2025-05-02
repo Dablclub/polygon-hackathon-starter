@@ -5,7 +5,6 @@ import { Inter } from 'next/font/google'
 
 import '@/styles/globals.css'
 import { Toaster } from '@/components/ui/sonner'
-import OnchainProvider from '@/providers/onchainProvider'
 
 const fontSans = Inter({
   subsets: ['latin'],
@@ -29,10 +28,8 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <OnchainProvider>
-          {children}
-          <Toaster richColors />
-        </OnchainProvider>
+        {children}
+        <Toaster richColors />
       </body>
     </html>
   )

@@ -1,4 +1,4 @@
-import PageWithAppbar from '@/components/layout/pageWithAppbar'
+import PageWithAppbar from '@/components/layout/page-wrapper'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 

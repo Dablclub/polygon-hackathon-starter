@@ -1,4 +1,4 @@
-import PageWithAppbar from '@/components/layout/pageWithAppbar'
+import PageWithAppbar from '@/components/layout/page-wrapper'
 import { ConnectedAccount } from '@/components/onchain/connectedAccount'
 import React from 'react'
 

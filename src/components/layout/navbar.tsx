@@ -4,8 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import MobileMenu from './mobileMenu'
-import AuthButton from '../buttons/authButton'
+import MobileMenu from './mobile-menu'
+import AuthButton from '../buttons/auth-button-dummy'
 
 export type MenuItemType = {
   displayText: string

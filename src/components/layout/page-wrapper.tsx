@@ -10,7 +10,7 @@ export interface NavbarProps {
   navTitle?: string
 }
 
-const PageWithAppbar: React.FC<NavbarProps & { children: React.ReactNode }> = ({
+const PageWrapper: React.FC<NavbarProps & { children: React.ReactNode }> = ({
   children,
 }) => {
   return (
@@ -26,4 +26,4 @@ const PageWithAppbar: React.FC<NavbarProps & { children: React.ReactNode }> = ({
   )
 }
 
-export default PageWithAppbar
+export default PageWrapper
