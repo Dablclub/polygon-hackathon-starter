@@ -5,26 +5,19 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   DynamicContextProvider,
   DynamicEventsCallbacks,
-  mergeNetworks,
 } from '@dynamic-labs/sdk-react-core'
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum'
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { createConfig, WagmiProvider } from 'wagmi'
 import { Address, http } from 'viem'
-import {
-  polygon,
-  polygonAmoy,
-  polygonZkEvm,
-  polygonZkEvmCardona,
-} from 'viem/chains'
+import { polygon, polygonAmoy } from 'viem/chains'
 import { useRouter } from 'next/navigation'
-import { customEvmNetworks } from './customNetworks'
 import { fetchUserAccount } from '@/services/user'
 
 const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ?? undefined
 
 const config = createConfig({
-  chains: [polygon, polygonAmoy, polygonZkEvm, polygonZkEvmCardona],
+  chains: [polygon, polygonAmoy],
   multiInjectedProviderDiscovery: false,
   transports: {
     [polygon.id]: http(
@@ -32,12 +25,6 @@ const config = createConfig({
     ),
     [polygonAmoy.id]: http(
       `https://polygon-amoy.g.alchemy.com/v2/${alchemyApiKey}`,
-    ),
-    [polygonZkEvm.id]: http(
-      `https://polygonzkevm-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
-    ),
-    [polygonZkEvmCardona.id]: http(
-      `https://polygonzkevm-cardona.g.alchemy.com/v2/${alchemyApiKey}`,
     ),
   },
 })
@@ -82,9 +69,6 @@ export default function OnchainProvider({ children }: { children: ReactNode }) {
       settings={{
         environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENV_ID ?? 'ENV_ID',
         events,
-        overrides: {
-          evmNetworks: (networks) => mergeNetworks(customEvmNetworks, networks),
-        },
         walletConnectors: [EthereumWalletConnectors],
       }}
     >
