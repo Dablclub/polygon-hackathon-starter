@@ -18,7 +18,7 @@ import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 import { Label } from '../ui/label'
 import { toast } from 'sonner'
-import MemecoinTokenABI from '@/contracts/MemecoinTokenAbi'
+import Erc20TokenAbi from '@/contracts/ERC20TokenAbi'
 import { ExternalLinkIcon } from 'lucide-react'
 import Link from 'next/link'
 
@@ -41,7 +41,7 @@ export default function SendErc20Modal({ userAddress }: SendErc20ModalProps) {
     isSuccess,
     refetch: refetchErc20Balance,
   } = useReadContract({
-    abi: MemecoinTokenABI,
+    abi: Erc20TokenAbi,
     address: erc20ContractAddress as `0x${string}`,
     functionName: 'balanceOf',
     args: [userAddress ?? '0x0'],
@@ -66,7 +66,7 @@ export default function SendErc20Modal({ userAddress }: SendErc20ModalProps) {
     setIsPendingSend(true)
     try {
       await writeContractAsync({
-        abi: MemecoinTokenABI,
+        abi: Erc20TokenAbi,
         address: erc20ContractAddress as `0x${string}`,
         functionName: 'transfer',
         args: [toAddress as `0x${string}`, parseEther(tokenAmount)],

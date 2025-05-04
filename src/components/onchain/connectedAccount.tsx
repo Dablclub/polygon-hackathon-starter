@@ -12,8 +12,8 @@ import { useDynamicContext } from '@dynamic-labs/sdk-react-core'
 export function ConnectedAccount() {
   const [isMounted, setIsMounted] = useState(false)
 
-  const { user } = useDynamicContext()
-  const { address, chain, chainId, status } = useAccount()
+  const { sdkHasLoaded, user } = useDynamicContext()
+  const { address, chain, chainId } = useAccount()
 
   const accountBalance = useBalance({
     address,
@@ -34,7 +34,7 @@ export function ConnectedAccount() {
     }
   }, [isMounted])
 
-  if (!isMounted) {
+  if (!isMounted || !sdkHasLoaded) {
     return (
       <div>
         <p className="text-lg">Loading...</p>
@@ -42,7 +42,7 @@ export function ConnectedAccount() {
     )
   }
 
-  if (status === 'disconnected') {
+  if (status === 'disconnected' && sdkHasLoaded) {
     return (
       <div>
         <p className="text-center text-lg">not connected</p>
