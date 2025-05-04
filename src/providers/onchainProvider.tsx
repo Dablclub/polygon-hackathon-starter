@@ -1,25 +1,31 @@
 'use client'
 
-import { type ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
   DynamicContextProvider,
   DynamicEventsCallbacks,
+  DynamicHandlers,
 } from '@dynamic-labs/sdk-react-core'
 import { EthereumWalletConnectors } from '@dynamic-labs/ethereum'
 import { DynamicWagmiConnector } from '@dynamic-labs/wagmi-connector'
 import { createConfig, WagmiProvider } from 'wagmi'
-import { Address, http } from 'viem'
-import { polygon, polygonAmoy } from 'viem/chains'
+import { http } from 'viem'
+import { mainnet, polygon, polygonAmoy } from 'viem/chains'
 import { useRouter } from 'next/navigation'
-import { fetchUserAccount } from '@/services/user'
+import { toast } from 'sonner'
+import { getDynamicCredentials } from '@/helpers/dynamic'
+import { fetchOrCreateUser } from '@/services/auth-services'
 
 const alchemyApiKey = process.env.NEXT_PUBLIC_ALCHEMY_API_KEY ?? undefined
 
 const config = createConfig({
-  chains: [polygon, polygonAmoy],
+  chains: [mainnet, polygon, polygonAmoy],
   multiInjectedProviderDiscovery: false,
   transports: {
+    [mainnet.id]: http(
+      `https://polygon-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
+    ),
     [polygon.id]: http(
       `https://polygon-mainnet.g.alchemy.com/v2/${alchemyApiKey}`,
     ),
@@ -31,36 +37,43 @@ const config = createConfig({
 
 const queryClient = new QueryClient()
 
-export default function OnchainProvider({ children }: { children: ReactNode }) {
+function OnchainProviderComponent({ children }: { children: ReactNode }) {
   const router = useRouter()
 
+  // Dynamic async callback for logs + logout
   const events: DynamicEventsCallbacks = {
-    onAuthSuccess: async ({ primaryWallet, user }) => {
-      console.log('onAuthSuccess was called', primaryWallet, user)
-      console.log('wallet', primaryWallet)
-      console.log('user', user)
-      if (!primaryWallet || !user || !user.userId || !user.username) {
-        console.error(
-          'Missing args from onAuthSuccess event, please check Dynamic/onchainProvider',
-        )
-        return
-      }
-      try {
-        const fetchedUser = await fetchUserAccount(
-          user.userId,
-          primaryWallet.address as Address,
-          user.username,
-        )
-        console.log('Succesfully fetched user:', fetchedUser)
-        router.push('/account')
-      } catch (error) {
-        console.error(error)
-        console.error('Unable to read/create user, please check the server')
-      }
-    },
     onLogout: (args) => {
       console.log('onLogout was called', args)
+      toast.info('logged out, come back soon!')
       router.push('/')
+    },
+  }
+
+  // Dynamic sync callbacks for successful auth
+  const handlers: DynamicHandlers = {
+    handleAuthenticatedUser: async ({ user: dynamicUser }) => {
+      const { id, email, appWallet, extWallet } =
+        getDynamicCredentials(dynamicUser)
+      try {
+        const { user } = await fetchOrCreateUser({
+          id,
+          email,
+          appWallet,
+          extWallet,
+        })
+
+        if (user) {
+          toast.success('Welcome back! 🍄')
+          router.push('/account')
+        } else {
+          toast.warning('Unable to load your account')
+          router.push('/')
+        }
+      } catch (error) {
+        console.error(error)
+        toast.warning('Unable to load your account')
+        router.push('/')
+      }
     },
   }
 
@@ -69,6 +82,7 @@ export default function OnchainProvider({ children }: { children: ReactNode }) {
       settings={{
         environmentId: process.env.NEXT_PUBLIC_DYNAMIC_ENV_ID ?? 'ENV_ID',
         events,
+        handlers,
         walletConnectors: [EthereumWalletConnectors],
       }}
     >
@@ -78,5 +92,20 @@ export default function OnchainProvider({ children }: { children: ReactNode }) {
         </QueryClientProvider>
       </WagmiProvider>
     </DynamicContextProvider>
+  )
+}
+
+// Main export with Suspense
+export default function OnchainProvider({ children }: { children: ReactNode }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen w-full items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <OnchainProviderComponent>{children}</OnchainProviderComponent>
+    </Suspense>
   )
 }

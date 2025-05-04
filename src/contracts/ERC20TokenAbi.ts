@@ -1,4 +1,4 @@
-const MemecoinTokenAbi = [
+const Erc20TokenAbi = [
   {
     inputs: [
       {
@@ -617,4 +617,4 @@ const MemecoinTokenAbi = [
   },
 ]
 
-export default MemecoinTokenAbi
+export default Erc20TokenAbi
