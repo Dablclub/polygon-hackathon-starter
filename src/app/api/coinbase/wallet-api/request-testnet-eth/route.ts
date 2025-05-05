@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import cdp from '@/server/clients/cdp'
-import { isAddress } from 'viem'
+import { createPublicClient, http, isAddress } from 'viem'
+import { baseSepolia } from 'viem/chains'
 
 export async function POST(request: NextRequest) {
   const { searchParams } = new URL(request.url)
@@ -11,18 +12,27 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const faucetResponse = await cdp.evm.requestFaucet({
+    const publicClient = createPublicClient({
+      chain: baseSepolia,
+      transport: http(),
+    })
+
+    const { transactionHash } = await cdp.evm.requestFaucet({
       address,
       network: 'base-sepolia',
       token: 'eth',
     })
-    console.log(faucetResponse)
+    console.log(transactionHash)
+
+    await publicClient.waitForTransactionReceipt({
+      hash: transactionHash,
+    })
 
     console.log(
-      `Requested funds from ETH faucet: https://sepolia.basescan.org/tx/${faucetResponse.transactionHash}`,
+      `Requested funds from ETH faucet: https://sepolia.basescan.org/tx/${transactionHash}`,
     )
 
-    return NextResponse.json({ response: faucetResponse }, { status: 200 })
+    return NextResponse.json({ transactionHash }, { status: 200 })
   } catch (error) {
     console.error('Error requesting testnet ETH:', error)
     return NextResponse.json(

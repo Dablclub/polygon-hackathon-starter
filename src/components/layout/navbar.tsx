@@ -17,13 +17,13 @@ export type MenuItemType = {
 const MENU_ITEMS: MenuItemType[] = [
   {
     displayText: 'bounties',
-    href: 'https://ethglobal.com/events/bangkok/prizes#polygon',
+    href: 'https://dabl.club',
     isExternal: true,
     isMobileOnly: false,
   },
   {
     displayText: 'repo',
-    href: 'https://github.com/Dablclub/hackathon-starter',
+    href: 'https://github.com/Dablclub/onchain-starter',
     isExternal: true,
     isMobileOnly: false,
   },

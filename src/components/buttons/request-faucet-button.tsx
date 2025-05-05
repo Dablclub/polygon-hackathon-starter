@@ -5,7 +5,13 @@ import { Button } from '../ui/button'
 import { Address } from 'viem'
 import { useMutation } from '@tanstack/react-query'
 
-export default function RequestFaucetBtn({ address }: { address: Address }) {
+export default function RequestFaucetBtn({
+  address,
+  onSuccessCallback,
+}: {
+  address: Address
+  onSuccessCallback?: () => Promise<void>
+}) {
   const { mutate: requestFaucet, isPending: isRequestingFaucet } = useMutation({
     mutationFn: async () => {
       const response = await fetch(
@@ -15,12 +21,18 @@ export default function RequestFaucetBtn({ address }: { address: Address }) {
         },
       )
       const data = await response.json()
-      console.log(data)
       return data
+    },
+    onSuccess: async () => {
+      await onSuccessCallback?.()
     },
   })
   return (
-    <Button onClick={() => requestFaucet()} disabled={isRequestingFaucet}>
+    <Button
+      variant="outline"
+      onClick={() => requestFaucet()}
+      disabled={isRequestingFaucet}
+    >
       Request Testnet ETH
     </Button>
   )

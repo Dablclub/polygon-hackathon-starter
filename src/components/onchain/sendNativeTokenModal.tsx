@@ -115,7 +115,7 @@ export default function SendNativeTokenModal({
               <div className="flex flex-col items-center pt-8">
                 <Link
                   className="flex items-center gap-x-1.5 hover:text-accent"
-                  href={`https://cardona-zkevm.polygonscan.com/tx/${hash}`}
+                  href={`https://polygonscan.com/tx/${hash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >

@@ -5,6 +5,7 @@ import { mainnet } from 'viem/chains'
 import Image from 'next/image'
 import { Address, Chain } from 'viem'
 import RequestFaucetBtn from '../buttons/request-faucet-button'
+import SendTransactionCoinbaseModal from './send-tx-button-coinbase'
 export default function AccountData({
   address,
   chain,
@@ -17,7 +18,7 @@ export default function AccountData({
   const nativeTokenTicker = chain.nativeCurrency.symbol
   const accountBalance = useBalance({
     address,
-    chainId: mainnet.id,
+    chainId,
   })
 
   const { data: ensName } = useEnsName({
@@ -69,7 +70,15 @@ export default function AccountData({
             <p className="text-lg">chain Id: {chainId}</p>
           </>
         )}
-        <RequestFaucetBtn address={address} />
+        <div className="flex gap-x-4">
+          <RequestFaucetBtn
+            address={address}
+            onSuccessCallback={async () => {
+              await accountBalance.refetch()
+            }}
+          />
+          <SendTransactionCoinbaseModal fromAddress={address} chain={chain} />
+        </div>
       </div>
     </div>
   )
