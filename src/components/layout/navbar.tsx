@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import MobileMenu from './mobile-menu'
-import AuthButton from '../buttons/auth-button-dynamic'
+import AuthButton from '../buttons/auth-button-dummy'
 
 export type MenuItemType = {
   displayText: string

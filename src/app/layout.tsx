@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { cn } from '@/lib/utils'
 
 import { Inter } from 'next/font/google'
-import OnchainProvider from '@/providers/onchainProvider'
 
 import '@/styles/globals.css'
 import { Toaster } from '@/components/ui/sonner'
@@ -29,10 +28,8 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <OnchainProvider>
-          {children}
-          <Toaster richColors />
-        </OnchainProvider>
+        {children}
+        <Toaster richColors />
       </body>
     </html>
   )
