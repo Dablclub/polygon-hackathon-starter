@@ -4,7 +4,7 @@ import { useBalance, useEnsAvatar, useEnsName } from 'wagmi'
 import { mainnet } from 'viem/chains'
 import Image from 'next/image'
 import { Address, Chain } from 'viem'
-
+import RequestFaucetBtn from '../buttons/request-faucet-button'
 export default function AccountData({
   address,
   chain,
@@ -69,6 +69,7 @@ export default function AccountData({
             <p className="text-lg">chain Id: {chainId}</p>
           </>
         )}
+        <RequestFaucetBtn address={address} />
       </div>
     </div>
   )
