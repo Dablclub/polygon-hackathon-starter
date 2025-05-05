@@ -5,6 +5,7 @@ import { Inter } from 'next/font/google'
 
 import '@/styles/globals.css'
 import { Toaster } from '@/components/ui/sonner'
+import TanstackQueryProvider from '@/providers/query-client-provider'
 
 const fontSans = Inter({
   subsets: ['latin'],
@@ -28,8 +29,10 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        {children}
-        <Toaster richColors />
+        <TanstackQueryProvider>
+          {children}
+          <Toaster richColors />
+        </TanstackQueryProvider>
       </body>
     </html>
   )

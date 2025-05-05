@@ -28,7 +28,7 @@ const MENU_ITEMS: MenuItemType[] = [
     isMobileOnly: false,
   },
   { displayText: 'faq', href: '/faq', isMobileOnly: false },
-  { displayText: 'account', href: '/account', isMobileOnly: false },
+  { displayText: 'accounts', href: '/accounts', isMobileOnly: false },
 ]
 
 export default function Navbar() {
