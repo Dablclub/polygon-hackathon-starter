@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/table'
 import { toast } from 'sonner'
 import { truncateString } from '@/lib/utils'
+import Link from 'next/link'
 interface CoinbaseAccount {
   address: string
   type: string
@@ -83,7 +84,9 @@ export default function Accounts() {
                   .map((account) => (
                     <TableRow key={account.address}>
                       <TableCell className="font-medium">
-                        {account.address}
+                        <Link href={`/accounts/${account.address}`}>
+                          {account.address}
+                        </Link>
                       </TableCell>
                       <TableCell>{account.type}</TableCell>
                     </TableRow>

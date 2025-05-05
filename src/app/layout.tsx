@@ -5,7 +5,7 @@ import { Inter } from 'next/font/google'
 
 import '@/styles/globals.css'
 import { Toaster } from '@/components/ui/sonner'
-import TanstackQueryProvider from '@/providers/query-client-provider'
+import WagmiOnchainProvider from '@/providers/wagmi-provider'
 
 const fontSans = Inter({
   subsets: ['latin'],
@@ -29,10 +29,10 @@ export default function RootLayout({
           fontSans.variable,
         )}
       >
-        <TanstackQueryProvider>
+        <WagmiOnchainProvider>
           {children}
           <Toaster richColors />
-        </TanstackQueryProvider>
+        </WagmiOnchainProvider>
       </body>
     </html>
   )
