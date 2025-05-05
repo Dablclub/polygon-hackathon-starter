@@ -1,8 +1,7 @@
+import cdp from '@/server/clients/cdp'
 import { NextResponse } from 'next/server'
-import { CdpClient } from '@coinbase/cdp-sdk'
-export async function GET() {
-  const cdp = new CdpClient()
 
+export async function GET() {
   try {
     const res = await cdp.evm.listAccounts({
       pageSize: 100,

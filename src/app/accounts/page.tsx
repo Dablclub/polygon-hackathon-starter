@@ -24,7 +24,7 @@ export default function Accounts() {
   const { data: accounts, refetch: refetchAccounts } = useQuery({
     queryKey: ['accounts'],
     queryFn: async () => {
-      const res = await fetch('/api/coinbase/accounts')
+      const res = await fetch('/api/coinbase/wallet-api/accounts')
       const data = await res.json()
       return data.accounts as CoinbaseAccount[]
     },
@@ -33,12 +33,11 @@ export default function Accounts() {
   const { mutateAsync: createAccount, isPending: isCreatingAccount } =
     useMutation({
       mutationFn: () =>
-        fetch('/api/coinbase/accounts/create', {
+        fetch('/api/coinbase/wallet-api/accounts/create', {
           method: 'POST',
         }),
       onSuccess: async (response) => {
         const data = await response.json()
-        console.log(data)
         toast.success(
           `New account created: ${truncateString(data.account.address)}`,
         )
@@ -51,8 +50,7 @@ export default function Accounts() {
 
   const handleCreateAccount = async () => {
     try {
-      const res = await createAccount()
-      console.log(res)
+      await createAccount()
     } catch (error) {
       console.error(error)
     }

@@ -9,7 +9,7 @@ export default function RequestFaucetBtn({ address }: { address: Address }) {
   const { mutate: requestFaucet, isPending: isRequestingFaucet } = useMutation({
     mutationFn: async () => {
       const response = await fetch(
-        `/api/coinbase/accounts/request-testnet-eth?address=${address}`,
+        `/api/coinbase/wallet-api/request-testnet-eth?address=${address}`,
         {
           method: 'POST',
         },
