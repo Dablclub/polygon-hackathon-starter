@@ -12,7 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-
+import { toast } from 'sonner'
+import { truncateString } from '@/lib/utils'
 interface CoinbaseAccount {
   address: string
   type: string
@@ -28,20 +29,24 @@ export default function Accounts() {
     },
   })
 
-  const { mutateAsync: createAccount } = useMutation({
-    mutationFn: () =>
-      fetch('/api/coinbase/create-account', {
-        method: 'POST',
-      }),
-    onSuccess: async (response) => {
-      const data = await response.json()
-      console.log(data)
-      await refetchAccounts()
-    },
-    onError: (error) => {
-      console.error(error)
-    },
-  })
+  const { mutateAsync: createAccount, isPending: isCreatingAccount } =
+    useMutation({
+      mutationFn: () =>
+        fetch('/api/coinbase/accounts/create', {
+          method: 'POST',
+        }),
+      onSuccess: async (response) => {
+        const data = await response.json()
+        console.log(data)
+        toast.success(
+          `New account created: ${truncateString(data.account.address)}`,
+        )
+        await refetchAccounts()
+      },
+      onError: (error) => {
+        console.error(error)
+      },
+    })
 
   const handleCreateAccount = async () => {
     try {
@@ -52,14 +57,14 @@ export default function Accounts() {
     }
   }
 
-  console.log(accounts)
-
   return (
     <PageWithAppbar>
       <div className="page gap-y-4">
         <div className="flex w-full flex-col items-center gap-y-4">
           <h2>accounts</h2>
-          <Button onClick={handleCreateAccount}>create account</Button>
+          <Button onClick={handleCreateAccount} disabled={isCreatingAccount}>
+            {isCreatingAccount ? 'creating...' : 'create account'}
+          </Button>
         </div>
         <div>
           <Table>
